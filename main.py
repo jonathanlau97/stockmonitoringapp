@@ -1,4 +1,4 @@
-import streamlit as st
+# Analysis modules                            beta = self.info.get('beta', 1.0)import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -641,8 +641,8 @@ def main():
     
     # Stock input - Including Malaysian stocks
     # Malaysian stocks use .KL suffix (Kuala Lumpur Stock Exchange)
-    default_stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA']
-    malaysian_stocks = ['1155.KL', '1023.KL', '5183.KL', '1066.KL', '5168.KL', '6012.KL', '3182.KL', '4707.KL', '5347.KL', '2445.KL','5263.KL']
+    default_stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'JPM', 'JNJ', 'V']
+    malaysian_stocks = ['1155.KL', '1023.KL', '5183.KL', '1066.KL', '5168.KL', '6012.KL', '3182.KL', '4707.KL', '5347.KL', '2445.KL']
     
     # Market selection
     market = st.sidebar.selectbox(
@@ -667,14 +667,18 @@ def main():
     col1, col2 = st.sidebar.columns([3, 1])
     with col1:
         if market == 'Global (Enter any symbol)':
-            symbol = st.text_input("Enter Stock Symbol:", value="AAPL", placeholder="e.g., AAPL, 1155.KL").upper()
+            symbol_input = st.text_input("Enter Stock Symbol:", value="AAPL", placeholder="e.g., AAPL, 1155.KL", key="global_symbol")
         else:
-            symbol = st.text_input("Enter Stock Symbol:", value=stock_options[0], placeholder=f"e.g., {stock_options[0]}").upper()
+            symbol_input = st.text_input("Enter Stock Symbol:", value=stock_options[0], placeholder=f"e.g., {stock_options[0]}", key=f"symbol_{market}")
     with col2:
         st.write("Popular:")
-        selected_stock = st.selectbox("", options=stock_options, label_visibility="collapsed")
-        if selected_stock:
-            symbol = selected_stock
+        selected_stock = st.selectbox("", options=stock_options, label_visibility="collapsed", key=f"select_{market}")
+    
+    # Determine final symbol to use
+    if selected_stock and selected_stock != stock_options[0]:
+        symbol = selected_stock
+    else:
+        symbol = symbol_input.upper() if symbol_input else stock_options[0]
     
     # Time period
     period = st.sidebar.selectbox(
