@@ -1,4 +1,4 @@
-import streamlit as st
+beta = self.info.get('beta', 1.0)import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -639,15 +639,40 @@ def main():
     # Sidebar
     st.sidebar.header("📊 Stock Analysis Dashboard")
     
-    # Stock input
-    default_stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA', 'JPM', 'JNJ', 'V']
+    # Stock input - Including Malaysian stocks
+    # Malaysian stocks use .KL suffix (Kuala Lumpur Stock Exchange)
+    default_stocks = ['AAPL', 'MSFT', 'GOOGL', 'AMZN', 'TSLA', 'META', 'NVDA']
+    malaysian_stocks = ['1155.KL', '1023.KL', '5183.KL', '1066.KL', '5168.KL', '6012.KL', '3182.KL', '4707.KL', '5347.KL', '2445.KL','5263.KL']
+    
+    # Market selection
+    market = st.sidebar.selectbox(
+        "Select Market:",
+        options=['US Market', 'Malaysian Market (Bursa)', 'Global (Enter any symbol)'],
+        index=0
+    )
+    
+    if market == 'US Market':
+        stock_options = default_stocks
+        market_suffix = ""
+        currency = "USD"
+    elif market == 'Malaysian Market (Bursa)':
+        stock_options = malaysian_stocks
+        market_suffix = ".KL"
+        currency = "MYR"
+    else:
+        stock_options = default_stocks + malaysian_stocks
+        market_suffix = ""
+        currency = "Various"
     
     col1, col2 = st.sidebar.columns([3, 1])
     with col1:
-        symbol = st.text_input("Enter Stock Symbol:", value="AAPL", placeholder="e.g., AAPL").upper()
+        if market == 'Global (Enter any symbol)':
+            symbol = st.text_input("Enter Stock Symbol:", value="AAPL", placeholder="e.g., AAPL, 1155.KL").upper()
+        else:
+            symbol = st.text_input("Enter Stock Symbol:", value=stock_options[0], placeholder=f"e.g., {stock_options[0]}").upper()
     with col2:
         st.write("Popular:")
-        selected_stock = st.selectbox("", options=default_stocks, label_visibility="collapsed")
+        selected_stock = st.selectbox("", options=stock_options, label_visibility="collapsed")
         if selected_stock:
             symbol = selected_stock
     
@@ -658,7 +683,20 @@ def main():
         index=3
     )
     
-    # Analysis modules
+    # Malaysian Stock Examples with company names
+    st.sidebar.markdown("**🇲🇾 Popular Malaysian Stocks:**")
+    st.sidebar.markdown("""
+    - **1155.KL** - Maybank (Malayan Banking)
+    - **1023.KL** - CIMB Group Holdings  
+    - **5183.KL** - Public Bank
+    - **1066.KL** - RHB Bank
+    - **5168.KL** - Hong Leong Bank
+    - **6012.KL** - IOI Corporation
+    - **3182.KL** - Genting
+    - **4707.KL** - Telekom Malaysia
+    - **5347.KL** - Petronas Dagangan
+    - **2445.KL** - MyEG Services
+    """)
     st.sidebar.subheader("📋 Analysis Modules")
     show_valuation = st.sidebar.checkbox("💰 Valuation Models", value=True)
     show_quality = st.sidebar.checkbox("🎯 Quality Metrics", value=True)  
@@ -682,12 +720,16 @@ def main():
                     change = current_price - prev_close
                     change_pct = (change / prev_close) * 100
                     
+                    # Currency-aware display
                     with col1:
-                        st.metric("Current Price", f"${current_price:.2f}", f"{change:+.2f} ({change_pct:+.1f}%)")
+                        st.metric("Current Price", f"{currency} {current_price:.2f}" if currency != "Various" else f"${current_price:.2f}", f"{change:+.2f} ({change_pct:+.1f}%)")
                     with col2:
                         market_cap = analyzer.info.get('marketCap', 0)
                         if market_cap:
-                            st.metric("Market Cap", f"${market_cap/1e9:.1f}B")
+                            if currency == "MYR":
+                                st.metric("Market Cap", f"RM {market_cap/1e9:.1f}B")
+                            else:
+                                st.metric("Market Cap", f"${market_cap/1e9:.1f}B")
                         else:
                             st.metric("Market Cap", "N/A")
                     with col3:
