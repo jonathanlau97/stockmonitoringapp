@@ -1,4 +1,5 @@
-beta = self.info.get('beta', 1.0)import streamlit as st
+beta = self.info.get('beta', 1.0)
+import streamlit as st
 import yfinance as yf
 import pandas as pd
 import numpy as np
