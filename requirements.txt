@@ -1,1 +1,37 @@
+# Core Streamlit framework
 streamlit
+
+# Data manipulation and analysis
+pandas
+numpy
+
+# Financial data API
+yfinance
+
+# Interactive plotting and visualization
+plotly
+
+# Additional data analysis (optional but recommended)
+scipy
+
+# For better performance with large datasets
+pyarrow
+
+# HTTP requests (dependency for yfinance)
+requests
+
+# Date and time handling (usually included with Python but good to specify)
+python-dateutil
+
+# Optional: For enhanced financial calculations
+# quantlib-python  # Uncomment if you want advanced financial modeling
+
+# Optional: For additional technical analysis indicators  
+# ta-lib  # Uncomment if you want more technical indicators (requires separate TA-Lib installation)
+
+# Optional: For machine learning-based predictions
+# scikit-learn  # Uncomment if you want to add ML models
+
+# Development and debugging (optional)
+# jupyter  # For development notebooks
+# matplotlib  # Alternative plotting library
