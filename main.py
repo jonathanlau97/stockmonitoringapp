@@ -1,4 +1,16 @@
-# Analysis modules                            beta = self.info.get('beta', 1.0)import streamlit as st
+# Analysis modules                            beta = self.info.get('beta', 1.0)#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+import streamlit as st
+
+# Page configuration - MUST be first Streamlit command
+st.set_page_config(
+    page_title="Wall Street Stock Monitor",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
 import yfinance as yf
 import pandas as pd
 import numpy as np
@@ -7,15 +19,9 @@ import plotly.express as px
 from plotly.subplots import make_subplots
 from datetime import datetime, timedelta
 import warnings
-warnings.filterwarnings('ignore')
 
-# Page configuration
-st.set_page_config(
-    page_title="Wall Street Stock Monitor",
-    page_icon="📈",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
+# Suppress warnings for cleaner output
+warnings.filterwarnings('ignore')
 
 # Custom CSS for better styling
 st.markdown("""
